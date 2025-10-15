@@ -1,18 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import DashboardTable from "../product/listProduct";
-
+import { smoothScrollTo } from "../../utils";
 const WelcomeDashboard = () => {
   const location = useLocation();
+  const tableRef = useRef(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
+
+  // Trigger scroll after animation completes
+  const handleAnimationComplete = () => {
+    if (location.state?.from === "productPage") {
+      setShouldScroll(true);
+    }
+  };
 
   useEffect(() => {
-    if (location.state?.from === "productPage") {
-      const element = document.getElementById("productTable");
-      if (element) {
-        const y = element.getBoundingClientRect().top + window.scrollY - 50; // adjust offset as needed
-        window.scrollTo({ top: y, behavior: "smooth" });
-      }
+    if (location.state?.from === "productPage" && tableRef.current) {
+      const y =
+        tableRef.current.getBoundingClientRect().top + window.scrollY - 50;
+      smoothScrollTo(y, 1000); // 1000ms duration, adjust as needed
     }
   }, [location]);
 
@@ -23,6 +30,7 @@ const WelcomeDashboard = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
+        onAnimationComplete={handleAnimationComplete}
         className="bg-white shadow-xl rounded-2xl p-8 text-center max-w-2xl w-full border border-gray-100"
       >
         <h1 className="text-3xl font-extrabold text-gray-800 mb-3">
@@ -32,14 +40,6 @@ const WelcomeDashboard = () => {
           You’ve successfully logged in! Explore your stats, manage your
           products, and enjoy your personalized experience.
         </p>
-
-        {/* Optional: Keep button for manual scroll */}
-        <a
-          href="#productTable"
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition-all duration-200 inline-block"
-        >
-          View Products
-        </a>
       </motion.div>
 
       {/* Divider */}
@@ -52,6 +52,7 @@ const WelcomeDashboard = () => {
 
       {/* Dashboard Table Section */}
       <motion.div
+        ref={tableRef}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
@@ -59,7 +60,6 @@ const WelcomeDashboard = () => {
       >
         <DashboardTable />
       </motion.div>
-      <div id="productTable"></div>
     </div>
   );
 };
