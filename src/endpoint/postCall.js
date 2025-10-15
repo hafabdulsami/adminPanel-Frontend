@@ -61,3 +61,13 @@ export const resetPassword = async (data, header) => {
     throw error;
   }
 };
+
+export const createProduct = async (data, header) => {
+  try {
+    const response = await axios(config(data, "/products", header));
+    return response.data;
+  } catch (error) {
+    console.error("Create Product error:", error);
+    throw error;
+  }
+};

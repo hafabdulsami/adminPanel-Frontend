@@ -1,17 +1,28 @@
+// src/utils/toastHelper.js
 import { toast } from "react-toastify";
 
-export const Toast = (message, type) => {
-  if (type === "error") {
-    toast.error(message, {
-      position: "bottom-left",
-      theme: "colored", // You might want to use "colored" for error themes
-    });
-  } else if (type === "success") {
-    toast.success(message, {
-      position: "bottom-left",
-      theme: "colored", // You might want to use "colored" for success themes
-    });
-  } else {
-    console.log("Unsupported toast type:", type);
-  }
+const defaultOptions = {
+  theme: "colored",
+  position: "bottom-left",
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+};
+
+export const showSuccessToast = (message, options = {}) => {
+  toast.success(message, { ...defaultOptions, ...options });
+};
+
+export const showErrorToast = (message, options = {}) => {
+  toast.error(message, { ...defaultOptions, ...options });
+};
+
+export const showInfoToast = (message, options = {}) => {
+  toast.info(message, { ...defaultOptions, ...options });
+};
+
+export const showWarningToast = (message, options = {}) => {
+  toast.warn(message, { ...defaultOptions, ...options });
 };

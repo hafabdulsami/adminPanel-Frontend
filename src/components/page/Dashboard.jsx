@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-
+import DashboardTable from "../product/listProduct";
 const WelcomeDashboard = () => {
   return (
     <div className=" flex-col items-center  p-6">
@@ -25,6 +25,7 @@ const WelcomeDashboard = () => {
           Get Started
         </button>
       </motion.div>
+      <DashboardTable />
     </div>
   );
 };

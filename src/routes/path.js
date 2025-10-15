@@ -6,6 +6,7 @@ export const Route = {
   OTP: "/otp",
   RESET_PASSWORD: "/reset-password",
   PRODUCT: "/product",
+  EDIT_PRODUCT: "/product/edit/:id",
 };
 
 export const navPath = [
