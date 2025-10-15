@@ -5,7 +5,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { createProduct } from "../../../endpoint/postCall";
 import { showSuccessToast, showErrorToast } from "../../common/Toast";
 import { useNavigate } from "react-router-dom";
-import { Route } from "../../../routes/path";
 const Product = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
