@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-
+import { navPath } from "../../routes/path";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -13,12 +13,6 @@ const Navbar = () => {
     logout();
     navigate("/");
   };
-
-  const navLinks = [
-    { label: "Dashboard", to: "/dashboard" },
-    { label: "Profile", to: "/profile" },
-    { label: "Settings", to: "/settings" },
-  ];
 
   return (
     <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
@@ -31,7 +25,7 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
-            {navLinks.map((link) => (
+            {navPath.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -72,7 +66,7 @@ const Navbar = () => {
             className="md:hidden bg-white shadow-lg border-t"
           >
             <div className="px-4 pt-4 pb-3 space-y-2">
-              {navLinks.map((link) => (
+              {navPath.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
