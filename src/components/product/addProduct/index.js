@@ -15,7 +15,7 @@ const Product = () => {
     try {
       const response = await createProduct(data, "Bearer " + user?.token);
       showSuccessToast(response.message || "Product created successfully!!!!!");
-      navigate(Route.DASHBOARD);
+      navigate("/dashboard", { state: { from: "productPage" } });
       console.log("Product created successfully:", response);
     } catch (error) {
       showErrorToast(

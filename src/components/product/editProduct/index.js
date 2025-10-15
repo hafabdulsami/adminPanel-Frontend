@@ -47,7 +47,7 @@ const EditProduct = () => {
       );
       console.log("Product updated successfully:", response);
       showSuccessToast(response.message || "Product updated successfully!");
-      navigate("/dashboard"); // Redirect to dashboard after update
+      navigate("/dashboard", { state: { from: "productPage" } });
     } catch (error) {
       console.error("Error updating product:", error);
       showErrorToast(
