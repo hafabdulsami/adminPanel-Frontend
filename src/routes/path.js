@@ -5,10 +5,11 @@ export const Route = {
   DASHBOARD: "/dashboard",
   OTP: "/otp",
   RESET_PASSWORD: "/reset-password",
+  PRODUCT: "/product",
 };
 
 export const navPath = [
   { label: "Dashboard", to: "/dashboard" },
-  { label: "Profile", to: "/profile" },
   { label: "Settings", to: "/settings" },
+  { label: "Product", to: "/product" },
 ];
