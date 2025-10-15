@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import DashboardTable from "../product/listProduct";
@@ -6,14 +6,6 @@ import { smoothScrollTo } from "../../utils";
 const WelcomeDashboard = () => {
   const location = useLocation();
   const tableRef = useRef(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-
-  // Trigger scroll after animation completes
-  const handleAnimationComplete = () => {
-    if (location.state?.from === "productPage") {
-      setShouldScroll(true);
-    }
-  };
 
   useEffect(() => {
     if (location.state?.from === "productPage" && tableRef.current) {
@@ -30,7 +22,6 @@ const WelcomeDashboard = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        onAnimationComplete={handleAnimationComplete}
         className="bg-white shadow-xl rounded-2xl p-8 text-center max-w-2xl w-full border border-gray-100"
       >
         <h1 className="text-3xl font-extrabold text-gray-800 mb-3">

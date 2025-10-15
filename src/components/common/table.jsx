@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Table = ({ columns, data, actions }) => {
+const Table = ({ columns, data, actions, onSort, sortConfig }) => {
   return (
     <div className="overflow-x-auto rounded-xl shadow-md bg-white">
       <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
@@ -10,10 +10,19 @@ const Table = ({ columns, data, actions }) => {
             {columns.map((col, index) => (
               <th
                 key={index}
-                style={{ width: col.width || "auto" }}
-                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap"
+                style={{
+                  width: col.width || "auto",
+                  cursor: col.sortable ? "pointer" : "default",
+                }}
+                onClick={() => col.sortable && onSort(col.accessor)}
+                className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider whitespace-nowrap select-none"
               >
-                {col.header}
+                <div className="flex items-center gap-1">
+                  {col.header}
+                  {col.sortable && sortConfig.key === col.accessor && (
+                    <span>{sortConfig.direction === "asc" ? "▲" : "▼"}</span>
+                  )}
+                </div>
               </th>
             ))}
 
@@ -42,7 +51,6 @@ const Table = ({ columns, data, actions }) => {
                   </td>
                 ))}
 
-                {/* Action Buttons */}
                 {actions && actions.length > 0 && (
                   <td className="px-6 py-4 text-center flex gap-2 justify-center">
                     {actions.map((action, index) => (
@@ -99,6 +107,8 @@ Table.propTypes = {
       onClick: PropTypes.func.isRequired,
     })
   ),
+  onSort: PropTypes.func,
+  sortConfig: PropTypes.object,
 };
 
 export default Table;

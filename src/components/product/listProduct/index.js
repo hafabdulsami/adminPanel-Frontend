@@ -12,6 +12,14 @@ const DashboardTable = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
@@ -33,11 +41,10 @@ const DashboardTable = () => {
 
   const handleDelete = async () => {
     try {
-      console.log("Deleting product with ID:", selectedProduct.id);
       await deleteProduct(selectedProduct.id, "Bearer " + user.token);
       setShowDialog(false);
       showSuccessToast("Product deleted successfully!");
-      fetchProducts(); // refresh list
+      fetchProducts();
     } catch (error) {
       console.error(error);
       showErrorToast(
@@ -47,19 +54,26 @@ const DashboardTable = () => {
   };
 
   const columns = [
-    { header: "Name", accessor: "name", width: "100px" },
-    { header: "Price", accessor: "price", width: "150px" },
-    { header: "Category", accessor: "category", width: "100px" },
+    { header: "Name", accessor: "name", width: "150px", sortable: true },
+    { header: "Price", accessor: "price", width: "100px", sortable: true },
+    {
+      header: "Category",
+      accessor: "category",
+      width: "120px",
+      sortable: true,
+    },
     {
       header: "Created By",
-      accessor: "createdBy",
-      width: "100px",
-      render: (row) => row.createdBy?.name,
+      accessor: "createdBy.name",
+      width: "120px",
+      sortable: true,
+      render: (row) => row.createdBy?.name || "-",
     },
     {
       header: "Created At",
       accessor: "createdAt",
       width: "150px",
+      sortable: true,
       render: (row) => new Date(row.createdAt).toLocaleDateString(),
     },
   ];
@@ -68,7 +82,7 @@ const DashboardTable = () => {
     {
       label: "Edit",
       type: "edit",
-      onClick: (row) => navigate(`/product/edit/${row._id}`),
+      onClick: (row) => navigate(`/product/edit/${row.id}`),
     },
     {
       label: "Delete",
@@ -80,10 +94,90 @@ const DashboardTable = () => {
     },
   ];
 
+  // 🔽 Sorting logic
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = React.useMemo(() => {
+    let sortableItems = [...products];
+    if (sortConfig.key) {
+      sortableItems.sort((a, b) => {
+        const getValue = (obj, path) =>
+          path.split(".").reduce((o, i) => (o ? o[i] : ""), obj);
+
+        const aValue = getValue(a, sortConfig.key);
+        const bValue = getValue(b, sortConfig.key);
+
+        if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [products, sortConfig]);
+
+  // 🧮 Pagination logic (applied after sorting)
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   return (
     <div className="p-6 relative">
       <h2 className="text-xl font-bold mb-4">Product List</h2>
-      <Table columns={columns} data={products} actions={actions} />
+
+      <Table
+        columns={columns}
+        data={paginatedData}
+        actions={actions}
+        onSort={handleSort}
+        sortConfig={sortConfig}
+      />
+
+      {/* Pagination */}
+      {sortedData.length > itemsPerPage && (
+        <div className="flex justify-center items-center mt-4 gap-2">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition"
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === i + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 bg-gray-200 text-gray-700 rounded disabled:opacity-50 hover:bg-gray-300 transition"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       <ConfirmDialog
         isOpen={showDialog}
