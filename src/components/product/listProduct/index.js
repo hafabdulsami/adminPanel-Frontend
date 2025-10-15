@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useMemo,
+} from "react";
 import Table from "../../common/table";
 import { getProduct } from "../../../endpoint/getCall";
 import { useAuth } from "../../../context/AuthContext";
@@ -7,7 +13,8 @@ import { showSuccessToast, showErrorToast } from "../../common/Toast";
 import { deleteProduct } from "../../../endpoint/deleteCall";
 import ConfirmDialog from "../../common/confirmDialog";
 
-const DashboardTable = () => {
+const DashboardTable = forwardRef((props, ref) => {
+  const { onEdit } = props;
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -22,6 +29,7 @@ const DashboardTable = () => {
 
   const navigate = useNavigate();
 
+  // ✅ Fetch all products
   const fetchProducts = async () => {
     try {
       const products = await getProduct("Bearer " + user.token);
@@ -35,10 +43,17 @@ const DashboardTable = () => {
     }
   };
 
+  // 🔁 Fetch products on mount
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  // ✅ Expose refresh function to parent (for Add/Edit refresh)
+  useImperativeHandle(ref, () => ({
+    refreshData: fetchProducts,
+  }));
+
+  // 🗑 Handle Delete
   const handleDelete = async () => {
     try {
       await deleteProduct(selectedProduct.id, "Bearer " + user.token);
@@ -53,6 +68,7 @@ const DashboardTable = () => {
     }
   };
 
+  // 🧩 Table columns
   const columns = [
     { header: "Name", accessor: "name", width: "150px", sortable: true },
     { header: "Price", accessor: "price", width: "100px", sortable: true },
@@ -82,7 +98,7 @@ const DashboardTable = () => {
     {
       label: "Edit",
       type: "edit",
-      onClick: (row) => navigate(`/product/edit/${row.id}`),
+      onClick: (row) => onEdit(row),
     },
     {
       label: "Delete",
@@ -103,7 +119,7 @@ const DashboardTable = () => {
     setSortConfig({ key, direction });
   };
 
-  const sortedData = React.useMemo(() => {
+  const sortedData = useMemo(() => {
     let sortableItems = [...products];
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
@@ -133,8 +149,10 @@ const DashboardTable = () => {
   };
 
   return (
-    <div className="p-6 relative">
-      <h2 className="text-xl font-bold mb-4">Product List</h2>
+    <div className="p-6 relative bg-white shadow-md rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 border-b pb-2">
+        Product List
+      </h2>
 
       <Table
         columns={columns}
@@ -188,6 +206,6 @@ const DashboardTable = () => {
       />
     </div>
   );
-};
+});
 
 export default DashboardTable;

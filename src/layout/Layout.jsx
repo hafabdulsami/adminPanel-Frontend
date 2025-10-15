@@ -12,8 +12,8 @@ import NotFoundPage from "../components/page/NotFound";
 import { useOTP } from "../context/otpContext";
 import AuthLayout from "./authLayout";
 import MainLayout from "./mainLayout";
-import Product from "../components/product/addProduct";
-import EditProduct from "../components/product/editProduct";
+
+import Product from "../components/product";
 const Layout = () => {
   const { user } = useAuth();
   const { otpToken } = useOTP();
@@ -24,7 +24,6 @@ const Layout = () => {
           <Route element={<MainLayout />}>
             <Route path={path.DASHBOARD} element={<Dashboard />} />
             <Route path={path.PRODUCT} element={<Product />} />
-            <Route path={path.EDIT_PRODUCT} element={<EditProduct />} />
           </Route>
         )}
         <Route element={<AuthLayout />}>

@@ -32,3 +32,13 @@ export const getProductById = async (id, header) => {
     throw error;
   }
 };
+
+export const getDashboardData = async (header) => {
+  try {
+    const response = await axios(config(null, `/dashboard`, header));
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    throw error;
+  }
+};
