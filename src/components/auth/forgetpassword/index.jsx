@@ -4,6 +4,7 @@ import { sendOTP } from "../../../endpoint/postCall";
 import { useNavigate } from "react-router-dom";
 import { Route } from "../../../routes/path";
 import { toast } from "react-toastify";
+import H2 from "../../common/H2";
 const ForgetPassword = () => {
   const navigate = useNavigate();
   const handleForgetPassword = async (data) => {
@@ -25,19 +26,14 @@ const ForgetPassword = () => {
     }
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white shadow-md rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-2">
-          Forgot Password
-        </h2>
-        <p className="text-gray-500 text-center mb-6 text-sm">
-          Enter your registered email address and we’ll send you a password
-          reset link.
-        </p>
-
-        <ForgetPasswordForm onSubmit={handleForgetPassword} />
-      </div>
-    </div>
+    <>
+      <H2 data="Forgot Password" />
+      <p className="text-gray-500 text-center mb-6 text-sm">
+        Enter your registered email address and we’ll send you a password reset
+        link.
+      </p>
+      <ForgetPasswordForm onSubmit={handleForgetPassword} />
+    </>
   );
 };
 

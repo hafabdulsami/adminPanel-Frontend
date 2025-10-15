@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Route } from "../../../routes/path";
 import { useOTP } from "../../../context/otpContext";
 import { toast } from "react-toastify";
+import H2 from "../../common/H2";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const { otpToken, removeOtpToken } = useOTP();
@@ -31,17 +32,13 @@ const ResetPassword = () => {
     }
   };
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          Reset Your Password
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          Enter your new password below
-        </p>
-        <ResetPasswordForm onSubmit={handleResetPassword} />
-      </div>
-    </div>
+    <>
+      <H2 data="Reset Your Password" />
+      <p className="text-center text-gray-600 mb-6">
+        Enter your new password below
+      </p>
+      <ResetPasswordForm onSubmit={handleResetPassword} />
+    </>
   );
 };
 

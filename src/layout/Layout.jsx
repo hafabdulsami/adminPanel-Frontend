@@ -10,6 +10,7 @@ import ResetPassword from "../components/auth/resetpassword";
 import Dashboard from "../components/page/Dashboard";
 import NotFoundPage from "../components/page/NotFound";
 import { useOTP } from "../context/otpContext";
+import AuthLayout from "./authLayout";
 const Layout = () => {
   const { user } = useAuth();
   const { otpToken } = useOTP();
@@ -18,14 +19,15 @@ const Layout = () => {
     <>
       <Routes>
         {user?.user && <Route path={path.DASHBOARD} element={<Dashboard />} />}
-        {otpToken && (
-          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
-        )}
-        <Route path="/" element={<Login />} />
-        <Route path={path.SIGNUP} element={<Signup />} />
-        <Route path={path.FORGOT_PASSWORD} element={<ForgetPassword />} />
-        <Route path={path.OTP} element={<OtpVerification />} />
-
+        <Route element={<AuthLayout />}>
+          {otpToken && (
+            <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
+          )}
+          <Route path="/" element={<Login />} />
+          <Route path={path.SIGNUP} element={<Signup />} />
+          <Route path={path.FORGOT_PASSWORD} element={<ForgetPassword />} />
+          <Route path={path.OTP} element={<OtpVerification />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

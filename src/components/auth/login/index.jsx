@@ -5,6 +5,7 @@ import { login } from "../../../endpoint/postCall";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import H2 from "../../common/H2";
 export default function Login() {
   const obj = useAuth();
   const navigate = useNavigate();
@@ -29,19 +30,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Welcome Back 👋
-        </h2>
-        <LoginForm onSubmit={handleLogin} />
-        <p className="text-center text-sm text-gray-600 mt-4">
-          Don’t have an account?{" "}
-          <a href={Route.SIGNUP} className="text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
-      </div>
-    </div>
+    <>
+      <H2 data="Welcome Back 👋" className="mb-6" />
+      <LoginForm onSubmit={handleLogin} />
+      <p className="text-center text-sm text-gray-600 mt-4">
+        Don’t have an account?{" "}
+        <a href={Route.SIGNUP} className="text-blue-600 hover:underline">
+          Sign up
+        </a>
+      </p>
+    </>
   );
 }
