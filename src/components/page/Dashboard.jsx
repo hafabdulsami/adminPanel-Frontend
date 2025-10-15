@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const WelcomeDashboard = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+    <div className=" flex-col items-center  p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

@@ -11,14 +11,18 @@ import Dashboard from "../components/page/Dashboard";
 import NotFoundPage from "../components/page/NotFound";
 import { useOTP } from "../context/otpContext";
 import AuthLayout from "./authLayout";
+import MainLayout from "./mainLayout";
 const Layout = () => {
   const { user } = useAuth();
   const { otpToken } = useOTP();
-  console.log(user?.user);
   return (
     <>
       <Routes>
-        {user?.user && <Route path={path.DASHBOARD} element={<Dashboard />} />}
+        {user?.user && (
+          <Route element={<MainLayout />}>
+            <Route path={path.DASHBOARD} element={<Dashboard />} />
+          </Route>
+        )}
         <Route element={<AuthLayout />}>
           {otpToken && (
             <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
