@@ -61,7 +61,15 @@ export const resetPassword = async (data, header) => {
     throw error;
   }
 };
-
+export const verifyEmail = async (data) => {
+  try {
+    const response = await axios(config(data, "/auth/verify-email"));
+    return response.data;
+  } catch (error) {
+    console.error("Verify Email error:", error);
+    throw error;
+  }
+};
 export const createProduct = async (data, header) => {
   try {
     const response = await axios(config(data, "/products", header));

@@ -2,8 +2,8 @@ import React, { useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { verifyOTP } from "../../../endpoint/postCall";
+import { useNavigate, useLocation } from "react-router-dom";
+import { verifyOTP, verifyEmail } from "../../../endpoint/postCall";
 import { Route } from "../../../routes/path";
 import { toast } from "react-toastify";
 import { useOTP } from "../../../context/otpContext";
@@ -19,6 +19,10 @@ const schema = yup.object().shape({
 const OtpVerification = () => {
   const { assignOtpToken } = useOTP();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Access the state you passed
+  const from = location.state?.from;
   const inputRefs = useRef([]);
   const {
     control,
@@ -52,18 +56,47 @@ const OtpVerification = () => {
 
   // 🚀 Submit handler
   const onSubmit = async (data) => {
-    console.log("Entered OTP:", data.otp);
-    const res = await verifyOTP(data);
-    assignOtpToken(res.data);
-    console.log(res);
-    console.log(assignOtpToken);
-    toast.success("OTP verified successfully!", {
-      theme: "colored",
-      position: "bottom-left",
-    });
-    navigate(Route.RESET_PASSWORD);
-    // Example: await axios.post("/api/auth/verify-otp", data);
-    //alert("OTP verified successfully!");
+    console.log(location.state);
+
+    if (from === "signup") {
+      console.log("Signup OTP Data:", data);
+      try {
+        const res = await verifyEmail(data);
+        toast.success("Email verified successfully!", {
+          theme: "colored",
+          position: "bottom-left",
+        });
+        navigate(Route.LOGIN);
+        // Example: await axios.post("/api/auth/verify-otp", data);
+      } catch (error) {
+        toast.error("Email verification failed!", {
+          theme: "colored",
+          position: "bottom-left",
+        });
+        console.error("Error verifying email:", error);
+      }
+      //alert("OTP verified successfully!");
+    }
+    if (from === "forgetpassword") {
+      try {
+        console.log("Signup OTP Data:", data);
+        const res = await verifyOTP(data);
+        assignOtpToken(res.data);
+        toast.success("OTP verified successfully!", {
+          theme: "colored",
+          position: "bottom-left",
+        });
+        navigate(Route.RESET_PASSWORD);
+      } catch (error) {
+        toast.error("OTP verification failed!", {
+          theme: "colored",
+          position: "bottom-left",
+        });
+        console.error("Error verifying OTP:", error);
+      }
+      // Example: await axios.post("/api/auth/verify-otp", data);
+      //alert("OTP verified successfully!");
+    }
   };
 
   return (

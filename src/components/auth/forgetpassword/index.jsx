@@ -15,7 +15,7 @@ const ForgetPassword = () => {
         theme: "colored",
         position: "bottom-left",
       });
-      navigate(Route.OTP);
+      navigate(Route.OTP, { state: { from: "forgetpassword" } });
     } catch (error) {
       toast.error(error.response.data.message, {
         theme: "colored",
